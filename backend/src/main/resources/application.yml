@@ -16,6 +16,9 @@ spring:
       maximum-pool-size: 5
       minimum-idle: 1
       connection-timeout: 10000
+      data-source-properties:
+        # Lets the driver collapse JDBC batches into multi-row INSERTs (one round trip per batch).
+        reWriteBatchedInserts: true
 
   jpa:
     open-in-view: false
