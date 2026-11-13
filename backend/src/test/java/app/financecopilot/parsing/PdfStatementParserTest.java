@@ -37,6 +37,19 @@ class PdfStatementParserTest {
     }
 
     @Test
+    void footerTextIsNotAppendedToTheLastTransaction() {
+        ParseResult result = parser.parseText("""
+                12/11/2026  UPI/123456789012/ZEPTO/zepto@ybl/Order   873.00 Dr  4,20,000.00
+
+                Closing Balance: 4,20,000.00
+                This is a computer generated statement.
+                """);
+
+        assertThat(result.rows()).singleElement().extracting(ParsedRow::description)
+                .isEqualTo("UPI/123456789012/ZEPTO/zepto@ybl/Order");
+    }
+
+    @Test
     void infersDirectionFromRunningBalanceWhenNoSuffix() {
         ParseResult result = parser.parseText("""
                 01-Nov-2026  Opening line  100.00  1,100.00

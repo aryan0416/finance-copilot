@@ -217,11 +217,16 @@ public final class SampleDataGenerator {
         for (Txn t : txns) {
             balance = t.isDebit() ? balance.subtract(t.debit()) : balance.add(t.credit());
             String narration = t.narration();
-            String first = narration.length() > 52 ? narration.substring(0, 52) : narration;
-            lines.add(String.format("%-11s %-52s %14s %3s %14s", fmt.format(t.date()), first,
+            // Banks wrap long narrations onto a second line at a separator, never mid-word.
+            int cut = narration.length() <= 52 ? narration.length()
+                    : Math.max(narration.lastIndexOf('/', 52), narration.lastIndexOf('-', 52)) + 1;
+            if (cut <= 0) {
+                cut = Math.min(52, narration.length());
+            }
+            lines.add(String.format("%-11s %-52s %14s %3s %14s", fmt.format(t.date()), narration.substring(0, cut),
                     indian(t.isDebit() ? t.debit() : t.credit()), t.isDebit() ? "Dr" : "Cr", indian(balance)));
-            if (narration.length() > 52) {
-                lines.add("            " + narration.substring(52)); // wrapped narration line
+            if (cut < narration.length()) {
+                lines.add("            " + narration.substring(cut)); // wrapped narration line
             }
         }
         lines.add("");

@@ -37,7 +37,8 @@ public class PdfStatementParser implements StatementParser {
     private static final Pattern TRAILING_MONEY = Pattern.compile(
             "\\s+(" + MONEY + ")(?:\\s*(Dr|Cr|DR|CR|dr|cr)\\b\\.?)?\\s*$");
     private static final Pattern NOISE_LINE = Pattern.compile(
-            "(?i).*(opening balance|closing balance|page \\d+|statement of account|date\\s+(narration|description|particulars)).*");
+            "(?i).*(opening balance|closing balance|page \\d+|statement of account|computer generated|end of statement"
+                    + "|date\\s+(narration|description|particulars)).*");
 
     @Override
     public FileType fileType() {
@@ -74,7 +75,14 @@ public class PdfStatementParser implements StatementParser {
             Matcher start = LINE_START.matcher(line);
             Optional<LocalDate> date = start.matches() ? ParsingSupport.parseDate(start.group(1)) : Optional.empty();
             if (date.isEmpty()) {
-                if (pending != null && !NOISE_LINE.matcher(line).matches() && !TRAILING_MONEY.matcher(line).find()) {
+                if (pending == null) {
+                    continue;
+                }
+                if (NOISE_LINE.matcher(line).matches() || TRAILING_MONEY.matcher(line).find()) {
+                    // Headers, footers and totals end the current row: nothing after them is its narration.
+                    rows.add(pending.toRow());
+                    pending = null;
+                } else {
                     pending = pending.appendDescription(line);
                 }
                 continue;
