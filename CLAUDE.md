@@ -59,5 +59,14 @@ Swagger UI: http://localhost:8080/swagger-ui.html · Demo login (dev profile): d
 - Built-in rules: KEYWORD = case-insensitive substring; REGEX = Java regex (short tokens like `\bola\b`
   are word-bounded). Lower `priority` wins.
 - Supabase free-tier pooler has few connections → Hikari pool size 5.
+- Gemini model default `gemini-3.5-flash-lite` (`GEMINI_MODEL`); 2.5-series models are closed to new keys.
+- LLM categorisation sends only merchant + direction + digit-masked narration (no amounts/balances).
+  Only system categories are offered to the model, so the shared cache never holds user categories.
+- Subscriptions: re-derived from the full debit history after every import (delete + insert). "Active" and
+  the dashboard's "upcoming" window use the latest transaction date as reference, not wall-clock today,
+  so older statements still show meaningful results.
+- Dashboard money semantics: TRANSFER-kind categories (Transfers, Investments) are neither income nor spend;
+  refunds (credits in expense categories) reduce spend; income = credits in INCOME or Uncategorised.
+- Anomaly = debit > mean + 2·stddev of the user's debits in that category (needs ≥5 samples), last 3 months.
 - Auth: single access token (24h) stored in localStorage; `/api/auth/me` restores the session on reload.
   No refresh-token rotation (documented as a future improvement).
