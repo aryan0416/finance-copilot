@@ -12,6 +12,16 @@
 ![Testcontainers](https://img.shields.io/badge/tested%20with-Testcontainers-2496ED?logo=docker&logoColor=white)
 ![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 
+## Live demo
+
+**App:** https://FRONTEND_URL &nbsp;·&nbsp; **API docs (Swagger):** https://BACKEND_URL/swagger-ui.html
+
+Log in with **demo@financecopilot.app / Demo@123**, or click *Try the demo account*. The demo account already has 6 months of sample statements loaded, so try **Ask AI** and **Insights** straight away.
+
+> The backend runs on a free tier that sleeps when idle, so the first request can take about 50 seconds. Everything is fast after that.
+
+Frontend on Vercel · backend (Docker) on Render · PostgreSQL on Supabase.
+
 ---
 
 ## Highlights
