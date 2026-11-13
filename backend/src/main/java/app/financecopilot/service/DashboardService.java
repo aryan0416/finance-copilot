@@ -174,6 +174,13 @@ public class DashboardService {
                 aiLog.countByUserIdAndKind(userId, AiQueryLog.Kind.CATEGORIZE));
     }
 
+    /** Latest transaction date in the month, so callers can tell a partial month from a complete one. */
+    LocalDate lastDateInMonth(Long userId, YearMonth month) {
+        Date last = jdbc.queryForObject("SELECT max(t.txn_date) " + FROM + " AND t.txn_date >= :start AND t.txn_date < :end",
+                monthParams(userId, month), Date.class);
+        return last == null ? null : last.toLocalDate();
+    }
+
     private long transactionCount(Long userId, YearMonth month) {
         Long n = jdbc.queryForObject("SELECT COUNT(*) " + FROM + " AND t.txn_date >= :start AND t.txn_date < :end",
                 monthParams(userId, month), Long.class);
