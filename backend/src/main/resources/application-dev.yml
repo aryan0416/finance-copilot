@@ -1,0 +1,7 @@
+app:
+  seed:
+    demo-user: true
+
+logging:
+  level:
+    app.financecopilot: DEBUG
