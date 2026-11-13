@@ -1,0 +1,20 @@
+# Integration tests: the datasource comes from Testcontainers (@ServiceConnection); these placeholders only
+# satisfy property binding. No real AI provider is used: tests replace LlmClient with a stub.
+spring:
+  datasource:
+    url: jdbc:postgresql://replaced-by-testcontainers/test
+    username: test
+    password: test
+  ai:
+    model:
+      chat: none
+
+app:
+  jwt:
+    secret: test-secret-test-secret-test-secret-0123456789
+  seed:
+    demo-user: false
+  ai:
+    retry:
+      initial-backoff: 1ms
+      max-backoff: 2ms
