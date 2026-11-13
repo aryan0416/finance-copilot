@@ -1,10 +1,26 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { ProtectedRoute } from '@/auth/ProtectedRoute'
+import { AppShell } from '@/components/layout/AppShell'
+import { AuthPage } from '@/pages/AuthPage'
+import { DashboardPage } from '@/pages/DashboardPage'
+import { TransactionsPage } from '@/pages/TransactionsPage'
+import { UploadPage } from '@/pages/UploadPage'
+import { SubscriptionsPage } from '@/pages/SubscriptionsPage'
+
 export default function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50">
-      <div className="rounded-2xl bg-white p-10 shadow-sm ring-1 ring-slate-200">
-        <h1 className="text-2xl font-semibold text-slate-900">Finance Copilot</h1>
-        <p className="mt-2 text-slate-500">Frontend scaffold. Pages arrive in phase 4.</p>
-      </div>
-    </main>
+    <Routes>
+      <Route path="/login" element={<AuthPage mode="login" />} />
+      <Route path="/register" element={<AuthPage mode="register" />} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppShell />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="transactions" element={<TransactionsPage />} />
+          <Route path="upload" element={<UploadPage />} />
+          <Route path="subscriptions" element={<SubscriptionsPage />} />
+        </Route>
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
