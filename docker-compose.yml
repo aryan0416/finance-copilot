@@ -1,0 +1,53 @@
+# Finance Copilot: full stack in containers.
+#
+#   Supabase (default):   docker compose up --build
+#   Local Postgres:       SPRING_PROFILES_ACTIVE=dev,local docker compose --profile local-db up --build
+#
+# Secrets come from backend/.env (copy backend/.env.example). The UI is served on http://localhost:3000.
+services:
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["local-db"]
+    environment:
+      POSTGRES_DB: financecopilot
+      POSTGRES_USER: financecopilot
+      POSTGRES_PASSWORD: financecopilot
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U financecopilot"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      # Only read when the "local" Spring profile is active.
+      LOCAL_DB_URL: jdbc:postgresql://postgres:5432/financecopilot
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      # Reach an Ollama running on the host when AI_PROVIDER=ollama.
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/8080' || exit 1"]
+      interval: 10s
+      retries: 12
+      start_period: 40s
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
