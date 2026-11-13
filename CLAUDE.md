@@ -68,5 +68,11 @@ Swagger UI: http://localhost:8080/swagger-ui.html · Demo login (dev profile): d
 - Dashboard money semantics: TRANSFER-kind categories (Transfers, Investments) are neither income nor spend;
   refunds (credits in expense categories) reduce spend; income = credits in INCOME or Uncategorised.
 - Anomaly = debit > mean + 2·stddev of the user's debits in that category (needs ≥5 samples), last 3 months.
+- Ask-AI: user SQL may not use WITH (the executor's CTE is the only one), comments, SELECT INTO or FOR
+  UPDATE; functions are allowlisted in `SqlValidator.ALLOWED_FUNCTIONS`. One automatic repair round feeds
+  the validator/DB error back to the model. Pie answers with >8 rows are downgraded to bar server-side.
+- Gemini may split one answer over several content parts; `SpringAiLlmClient` joins all generations.
+- Insights: aggregates only, cached in memory per user + month + figures hash; partial months are flagged
+  (`partialMonthDataThrough`) so the model does not report a fake drop.
 - Auth: single access token (24h) stored in localStorage; `/api/auth/me` restores the session on reload.
   No refresh-token rotation (documented as a future improvement).

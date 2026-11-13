@@ -1,9 +1,11 @@
 import { api } from './client'
 import type {
+  AskResponse,
   AuthResponse,
   Category,
   Dashboard,
   ImportSummary,
+  InsightResponse,
   Page,
   RecategorizeResponse,
   StatementSummary,
@@ -59,4 +61,13 @@ export const statementApi = {
 
 export const subscriptionApi = {
   list: () => api.get<Subscription[]>('/api/subscriptions').then((r) => r.data),
+}
+
+export const aiApi = {
+  ask: (question: string) =>
+    api.post<AskResponse>('/api/ask', { question }, { timeout: 90_000 }).then((r) => r.data),
+  insight: (month?: string, refresh = false) =>
+    api
+      .get<InsightResponse>('/api/insights', { params: { month, refresh: refresh || undefined }, timeout: 90_000 })
+      .then((r) => r.data),
 }

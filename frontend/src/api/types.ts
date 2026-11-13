@@ -151,3 +151,22 @@ export interface ProblemDetail {
   detail?: string
   fieldErrors?: Record<string, string>
 }
+
+export type ChartType = 'bar' | 'line' | 'pie' | 'table' | 'number'
+
+export interface AskResponse {
+  question: string
+  sql: string
+  chartType: ChartType
+  explanation: string
+  columns: string[]
+  rows: (string | number | boolean | null)[][]
+  latencyMs: number
+}
+
+export interface InsightResponse {
+  month: string
+  summary: string
+  figures: Record<string, unknown>
+  generatedAt: string
+}

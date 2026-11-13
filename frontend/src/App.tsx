@@ -6,6 +6,8 @@ import { DashboardPage } from '@/pages/DashboardPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
 import { UploadPage } from '@/pages/UploadPage'
 import { SubscriptionsPage } from '@/pages/SubscriptionsPage'
+import { AskAiPage } from '@/pages/AskAiPage'
+import { InsightsPage } from '@/pages/InsightsPage'
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
           <Route path="transactions" element={<TransactionsPage />} />
           <Route path="upload" element={<UploadPage />} />
           <Route path="subscriptions" element={<SubscriptionsPage />} />
+          <Route path="ask" element={<AskAiPage />} />
+          <Route path="insights" element={<InsightsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
