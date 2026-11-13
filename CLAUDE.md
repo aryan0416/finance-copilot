@@ -20,8 +20,14 @@ SPRING_PROFILES_ACTIVE=dev,local ./mvnw spring-boot:run   # use local docker Pos
 
 # frontend
 cd frontend && npm install && npm run dev      # http://localhost:5173, proxies /api -> :8080
-cd frontend && npm run build
+cd frontend && npm run lint && npm run build
+
+# full stack in containers (UI :3000, API :8080); add --profile local-db + SPRING_PROFILES_ACTIVE=dev,local for local PG
+docker compose up --build
 ```
+CI (`.github/workflows/ci.yml`): `./mvnw verify` (unit + Testcontainers) and frontend lint/build.
+Integration tests extend `support/IntegrationTest` (singleton Postgres container, stub `LlmClient` via
+`LLM_ANSWER`); they are skipped automatically when Docker is not running.
 Swagger UI: http://localhost:8080/swagger-ui.html · Demo login (dev profile): demo@financecopilot.app / Demo@123
 
 ## Conventions
